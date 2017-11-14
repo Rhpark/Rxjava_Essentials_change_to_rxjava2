@@ -140,8 +140,8 @@ public class FirstExampleFragment extends Fragment {
 //        fromTest();
 //        publishTest();
 //        behaviorTest();
-//        replayTest();//궁금 1 버퍼에 저장 후 옵저버에게 재생 Error1
-//        asyncSubject();//Error2
+//        replayTest();//
+//        asyncSubject();//
 //        justTest();
 //        rangeTest();
 //        repeateTest();
@@ -444,6 +444,8 @@ public class FirstExampleFragment extends Fragment {
     private void replayTest(){
 
         final ReplaySubject<Integer> t = ReplaySubject.create();
+        t.onNext(1);
+        t.onNext(2);
 
         t.subscribe(new Observer<Integer>() {
             @Override
@@ -466,128 +468,64 @@ public class FirstExampleFragment extends Fragment {
                 Log.d(TAG,"replayTest onNext " + integer);
             }
         });
-        t.onNext(1);
-        t.onNext(2);
         t.onNext(3);
-        t.onComplete();//Error
-//        t.bu
-//
-//        Observable.create(new Observable.OnSubscribe<Integer>() {
-//            @Override
-//            public void call(Subscriber<? super Integer> subscriber) {
-//
-//                Log.d(TAG,"replayTest create onNext ");
-//
-//                subscriber.onNext(0);
-//                subscriber.onNext(-1);
-//                subscriber.onNext(-2);
-//                subscriber.onNext(-3);
-//
-//                subscriber.onCompleted();
-//            }
-//        }).doOnCompleted(new Action0() {
-//            @Override
-//            public void call() {
-//
-//                Log.d(TAG,"replayTest create call ");
-//
-//                t.onNext(1);
-//                t.onNext(2);
-////                t.onNext(3);
-//                t.onNext(4);
-//                t.onCompleted();    //Error
-////                t.onNext(5);안됨
-//            }
-//        }).subscribe(new Observer<Integer>() {
-//            @Override
-//            public void onCompleted() {
-//                Log.d(TAG,"replayTest subscribe onCompleted ");
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                Log.d(TAG,"replayTest subscribe onError ");
-//            }
-//
-//            @Override
-//            public void onNext(Integer integer) {
-//                Log.d(TAG,"replayTest subscribe onNext " + integer);
-//            }
-//        });//subscribe는 Observable 시작하도록 호출만되는함수
-
+        t.onComplete();
     }
 
     private void asyncSubject(){
 
         final AsyncSubject<Integer> t = AsyncSubject.create();
-
+//        t.subscribe(it -> Log.d("asyncSubject","1 it = "+it) );
         t.subscribe(new Observer<Integer>() {
             @Override
-            public void onComplete() {
-                Log.d(TAG,"AsyncSubject onCompleted ");
+            public void onSubscribe(Disposable d) {
+                Log.d("asyncSubject","1onSubscribe ");
             }
 
             @Override
-            public void onSubscribe(Disposable d) {
-
+            public void onNext(Integer value) {
+                Log.d("asyncSubject","1 it = "+value);
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.d(TAG,"AsyncSubject onError ");
+
             }
 
             @Override
-            public void onNext(Integer integer) {
-                Log.d(TAG,"AsyncSubject onNext " + integer);
+            public void onComplete() {
+                Log.d("asyncSubject","1onComplete ");
             }
         });
 
-        Observable.create(new ObservableOnSubscribe<Integer>() {
-            @Override
-            public void subscribe(ObservableEmitter<Integer> e) throws Exception {
-                Log.d(TAG,"AsyncSubject create onNext ");
+        t.onNext(1);
+        t.onNext(3);
 
-                e.onNext(0);
-                e.onNext(-1);
-                e.onNext(-2);
-                e.onNext(-3);
-
-                e.onComplete();
-            }
-        }).doOnComplete(new Action() {
-            @Override
-            public void run() throws Exception {
-                Log.d(TAG,"AsyncSubject create call ");
-
-                t.onNext(1);
-                t.onNext(2);
-//                t.onNext(3);
-                t.onNext(4);
-                t.onComplete();    //Error
-//                t.onNext(5);안됨
-            }
-        }).subscribe(new Observer<Integer>() {
-            @Override
-            public void onComplete() {
-                Log.d(TAG,"AsyncSubject subscribe onCompleted ");
-            }
-
+//        t.subscribe(it -> Log.d("asyncSubject","2 it = "+it) );
+        t.subscribe(new Observer<Integer>() {
             @Override
             public void onSubscribe(Disposable d) {
+                Log.d("asyncSubject","2onSubscribe ");
+            }
 
+            @Override
+            public void onNext(Integer value) {
+                Log.d("asyncSubject","2 it = "+value);
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.d(TAG,"AsyncSubject subscribe onError ");
+
             }
 
             @Override
-            public void onNext(Integer integer) {
-                Log.d(TAG,"AsyncSubject subscribe onNext " + integer);
+            public void onComplete() {
+                Log.d("asyncSubject","2onComplete ");
             }
         });
+
+        t.onNext(5);
+        t.onComplete();
 
     }
 
